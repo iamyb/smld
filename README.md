@@ -4,8 +4,11 @@ SMLD(Simple Memory Leak Detector) is a simple implementation to detect memory le
 The implemenation of SMLD is quite lightweight. It inject several hooks via LD_PRELOAD for memroy allocation/deallocation, to add a WRAPPER upon glibc's related APIs. Those hooks will hash the address of each allocation and unhash it while it's freed. With this, you can observe all kind of memory allocation/deallocation behavior for your program. 
 
 #### Sample Usage
-	//hello_smld.c
+	//hello_smld.c 
+	//build: gcc hello_smld.c -o hello_smld.out -L. -lsmld -ldl -lrt
+	//run:   LD_PRELOAD=./libsmldhook.so ./hello_smld.out
     #include<stdio.h>
+    #include"smld.h"
 	void main()
 	{
 		smld_start();
@@ -14,7 +17,7 @@ The implemenation of SMLD is quite lightweight. It inject several hooks via LD_P
 		smld_stop();
 	}
 
-## Supports and Limitaions
+## Supports and Limitations
 - Support multiple threads detection.
 - Support multiple FORKed processes detection.
 - X86_64, LINUX, GCC extension required.
