@@ -24,12 +24,12 @@ extern "C" {
 #include<stdlib.h>
 #include<stdio.h>
 #define handle_error(msg)\
-	do{                                                           \
-		char buf[100];                                            \
-		snprintf(buf,sizeof(buf),"FILE:%s,LINE:%d,%s",__FILE__,__LINE__,msg);\
-		perror(buf);                                              \
-		exit(EXIT_FAILURE);                                       \
-	}while(0)
+    do{                                                                      \
+        char buf[100];                                                       \
+        snprintf(buf,sizeof(buf),"FILE:%s,LINE:%d,%s",__FILE__,__LINE__,msg);\
+        perror(buf);                                                         \
+        exit(EXIT_FAILURE);                                                  \
+    }while(0)
 
 #ifdef __cplusplus
 }
