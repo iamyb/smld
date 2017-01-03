@@ -35,66 +35,66 @@ static void* libsmldso_ptr = NULL;
 /*----------------------------------------------------------------------------*/
 void smld_start(void)
 {
-	libsmldso_ptr = dlopen("../lib/libsmldhook.so", RTLD_LAZY);
-	if(!libsmldso_ptr)
-		handle_error("dlopen ../lib/libsmldhook.so");
+    libsmldso_ptr = dlopen("../lib/libsmldhook.so", RTLD_LAZY);
+    if(!libsmldso_ptr)
+        handle_error("dlopen ../lib/libsmldhook.so");
 
-	smldhash_getcountp = dlsym(libsmldso_ptr, "smldhash_getcount");
-	if(!smldhash_getcountp)
-		handle_error("dlysm smldhash_getcount");
+    smldhash_getcountp = dlsym(libsmldso_ptr, "smldhash_getcount");
+    if(!smldhash_getcountp)
+        handle_error("dlysm smldhash_getcount");
 
-	smldhash_getlistp = dlsym(libsmldso_ptr, "smldhash_getlist");
-	if(!smldhash_getlist)
-		handle_error("dlsym smldhash_getlist");
+    smldhash_getlistp = dlsym(libsmldso_ptr, "smldhash_getlist");
+    if(!smldhash_getlist)
+        handle_error("dlsym smldhash_getlist");
 
-	smldhash_remove64p = dlsym(libsmldso_ptr, "smldhash_remove64");
-	if(!smldhash_remove64p)
-		handle_error("dlsym smldhash_remove64");
-	
-	smldhash_cleanupp = dlsym(libsmldso_ptr, "smldhash_cleanup");
-	if(!smldhash_cleanupp)
-		handle_error("dlsym smldhash_cleanup");
+    smldhash_remove64p = dlsym(libsmldso_ptr, "smldhash_remove64");
+    if(!smldhash_remove64p)
+        handle_error("dlsym smldhash_remove64");
+    
+    smldhash_cleanupp = dlsym(libsmldso_ptr, "smldhash_cleanup");
+    if(!smldhash_cleanupp)
+        handle_error("dlsym smldhash_cleanup");
 
-	int fd = shm_open(SMLDHOOK_SHM_NAME, O_RDWR, 0666);
-	if(fd == -1)
-		handle_error("shm_open SMLDHOOK");
+    int fd = shm_open(SMLDHOOK_SHM_NAME, O_RDWR, 0666);
+    if(fd == -1)
+        handle_error("shm_open SMLDHOOK");
 
-	smld_enabled = mmap(NULL, SMLDHOOK_SHM_SIZE, PROT_WRITE, MAP_SHARED, fd,0);
-	if(smld_enabled == MAP_FAILED)
-		handle_error("mmap SMLDHOOK");
+    smld_enabled = mmap(NULL, SMLDHOOK_SHM_SIZE, PROT_WRITE, MAP_SHARED, fd,0);
+    if(smld_enabled == MAP_FAILED)
+        handle_error("mmap SMLDHOOK");
 
-	*smld_enabled = 1;
+    *smld_enabled = 1;
 }
 
 /*----------------------------------------------------------------------------*/
 uint64_t smld_check(void* ptr)
 {
-	uint64_t *tmp = ptr;
-	if(!smldhash_getcountp || !smldhash_getlistp || !smldhash_remove64p)
-		handle_error("smldhash function is null");
+    uint64_t *tmp = ptr;
+    if(!smldhash_getcountp || !smldhash_getlistp || !smldhash_remove64p)
+        handle_error("smldhash function is null");
 
-	uint64_t count = smldhash_getcountp();
+    uint64_t count = smldhash_getcountp();
 
-	if(count && tmp != NULL){
-		smldhash_getlistp(tmp);
-	}
+    if(count && tmp != NULL){
+        smldhash_getlistp(tmp);
+    }
 
-	smldhash_cleanupp();
-	return count;
+    smldhash_cleanupp();
+    return count;
 }
 
 /*----------------------------------------------------------------------------*/
 void smld_stop(void)
 {
-	*smld_enabled = 0;
-	
-	if(munmap((void*)smld_enabled, SMLDHOOK_SHM_SIZE) == -1)
-		handle_error("munmap SMLDHOOK");
-	dlclose(libsmldso_ptr);
-	smldhash_cleanupp();
-	smldhash_remove64p = NULL;
-	smldhash_getcountp = NULL;
-	smldhash_getlistp  = NULL;
-	smldhash_cleanupp  = NULL;
+    *smld_enabled = 0;
+    
+    if(munmap((void*)smld_enabled, SMLDHOOK_SHM_SIZE) == -1)
+        handle_error("munmap SMLDHOOK");
+    dlclose(libsmldso_ptr);
+    smldhash_cleanupp();
+    smldhash_remove64p = NULL;
+    smldhash_getcountp = NULL;
+    smldhash_getlistp  = NULL;
+    smldhash_cleanupp  = NULL;
 }
 
