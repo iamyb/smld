@@ -22,25 +22,25 @@ using namespace std;
 
 void testcase_1(void)
 {
-	int* ptr = new int(1);
-	delete ptr;
-	int tmp[10];
-	int lc = smld_check(tmp);
-	EXPECTED("TC1", lc, 0);
+    int* ptr = new int(1);
+    delete ptr;
+    int tmp[10];
+    int lc = smld_check(tmp);
+    EXPECTED("TC1", lc, 0);
 }
 
 void testcase_2(void)
 {
-	int* ptr = new int(1);
-	int lc = smld_check(NULL);
-	EXPECTED("TC2", lc, 1);
+    int* ptr = new int(1);
+    int lc = smld_check(NULL);
+    EXPECTED("TC2", lc, 1);
 }
 
 int main()
 {
-	smld_start();
-	testcase_1();
-	testcase_2();
-	smld_stop();
-	return 0;
+    smld_start();
+    testcase_1();
+    testcase_2();
+    smld_stop();
+    return 0;
 }
